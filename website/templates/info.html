@@ -1,0 +1,166 @@
+{% extends "base.html" %} {% block title %}Calendar{% endblock %} {% block content%} 
+
+<h2>Wage Calculator</h2>
+
+<!-- <style>
+  body{
+    background-color: #DDDDDD;
+    }
+</style> -->
+
+
+<link href='static/fullcalendar/main.css' rel='stylesheet' />
+    <script src='static/fullcalendar/main.js'></script>
+    <script>
+      
+      var modify = function(event){
+        console.log(event);
+        if (event.base_hours){
+          return {backgroundColor: "#ffebbb"}
+        }
+        else if (event.overtimes){
+          return {backgroundColor: "#e16262"}
+        }
+        else if (event.holiday){
+          return {backgroundColor: "#5be7a9"}
+        }
+        else if (event.sick){
+          return {backgroundColor: "#a7bcb9"}
+        }
+      }
+      
+      var getTitle = function(event){
+        if (event.base_hours){
+          return "Base"
+        }
+        else if (event.overtimes){
+          return "O/T"
+        }
+        else if (event.holiday){
+          return "Holiday"
+        }
+        else if (event.sick){
+          return "Sick"
+        }
+      }
+
+
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var currentDate;
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth'
+        });
+        fetch("/getEvents", {}).then((_res) => _res.json()).then(data => {
+          for (var event of data){
+            console.log(event)
+            calendar.addEvent({
+          title: getTitle(event), 
+          start: event.start_hours,
+          display:"background",
+          ...modify(event),
+          textColor: "black"
+
+        });
+          }
+          for (var x of document.getElementsByClassName("fc-bg-event")) {
+		      x.style.opacity=2;
+          x.style.color="black";
+          x.style.fontSize="20px";
+          x.style.fontpadding="20px";
+	        }
+
+        });
+        
+        calendar.render();
+        calendar.on('dateClick', function(info) {
+          currentDate = info.dateStr;
+            console.log('clicked on ' + info.dateStr);
+            $("#currentDate").text(info.dateStr);
+            $("#exampleModal").show();
+            console.log($("#exampleModal"))
+        });
+        $("#modalClose").on("click", function(){
+          $("#exampleModal").hide();
+        })
+      });
+
+    </script>
+
+<div id='calendar'></div>
+
+    {% block modal %}
+    <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="currentDate">New message</h5>
+            <button type="button" id="modalClose" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group row">
+                <label for="startHours" class="col-sm-4 col-form-label">Start Time</label>
+                <div class="col-sm-5">
+                  <input class="form-control" id="startHours" placeholder="Start Time">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="endHours" class="col-sm-4 col-form-label">Hours Worked</label>
+                <div class="col-sm-5">
+                  <input class="form-control" id="hoursWorked" placeholder="Hours Worked">
+                </div>
+              </div>
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-2 pt-0">-----></legend>
+                  <div class="col-sm-10">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="pickone" id="basehours" value="option1">
+                      <label class="form-check-label" for="basehours">
+                        Base
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="pickone" id="overtimes" value="option2">
+                      <label class="form-check-label" for="overtimes">
+                        Overtimes
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="pickone" id="holiday" value="option3">
+                      <label class="form-check-label" for="holiday">
+                        Holiday
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="pickone" id="sick" value="option4">
+                      <label class="form-check-label" for="sick">
+                        Sick
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="pickone" id="delete_events" value="option5">
+                      <label class="form-check-label" for="delete_events">
+                        Delete Event
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="form-group row">
+                <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary" onClick="callvalue()">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends "base.html" %} {% block title %}Settings{% endblock %} {% block content%} 
+
+<h4><strong>SETTINGS</strong></h4>
+
+{% block script %}
+<br>
+    <style>
+/* body{
+    background-color: #DDDDDD;
+} */
+    * {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+button[type=submit] {
+  background-color: #0074D9;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: left
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.col-25 {
+  float: left;
+  width: 150px;
+  margin-top: 4px;
+}
+
+.col-75 {
+  float: left;
+  width: 200px;
+  margin-top: 4px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 500px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+    </style>
+
+<div class="container">
+    <form action="/savesettings" method="POST">
+
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Base Hourly Rate</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="base" name="base" value="{{user.base}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Overtimes 1</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="overtimes1" name="overtimes1" value="{{user.overtimes1}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Overtimes 2</label> 
+        </div>
+        <div class="col-75">
+            <input type="text" id="overtimes2" name="overtimes2" value="{{user.overtimes2}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Holiday Rate</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="holidayrate" name="holidayrate" value="{{user.holidayrate}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Sick</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="sick" name="sick" value="{{user.sick}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Shift Allowance 1</label>       
+        </div>
+        <div class="col-75">
+            <input type="text" id="shiftallowance1" name="shiftallowance1" value="{{user.shiftallowance1}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Shift Allowance 2</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="shiftallowance2" name="shiftallowance2" value="{{user.shiftallowance2}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Shift Allowance 3</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="shiftallowance3" name="shiftallowance3" value="{{user.shiftallowance3}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Shift Allowance 4</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="shiftallowance4" name="shiftallowance4" value="{{user.shiftallowance4}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Shift Allowance 5</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="shiftallowance5" name="shiftallowance5" value="{{user.shiftallowance5}}" ><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-25">
+            <label for="fname">Tax</label>
+        </div>
+        <div class="col-75">
+            <input type="text" id="tax" name="tax" ><br>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <button type="submit" value="submit">Save</button>
+    </div>
+    </form>
+</div>
+    {% endblock %}
+{% endblock %}

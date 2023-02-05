@@ -1,0 +1,114 @@
+{% extends "base.html" %} {% block title %}Results{% endblock %} {% block content%} 
+<br>
+ <h4><strong>RESULTS</strong></h4>
+
+{% block script %}
+
+<style>
+    /* body{
+        background-image: radial-gradient(circle, rgba(24, 247, 39, 0.26) 0%, rgba(24, 172, 247, 1) 100%);
+    } */
+    /* body{
+    background-color: #DDDDDD;
+    } */
+    * {
+        box-sizing: border-box;
+    }
+    input{
+        margin-left: 5px;
+        text-align: center;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    td, th {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+    th {
+        background-color: #AAAAAA;
+        font-weight: bold;
+    }
+    tr:hover {
+        background-color: #AAAAAA;
+    }
+    .container {
+    border-radius: 5px;
+    padding: 5px;
+    }
+    .col-25 {
+    float: left;
+    width: 150px;
+    margin-top: 4px;
+    }
+    .col-75 {
+    float: left;
+    width: 200px;
+    margin-top: 4px;
+    }
+    
+</style>
+<br>
+<div class="container">
+    <form action="/calculate_payment" method="POST">
+
+        <div class="row">
+            <div class="col-25">
+                <label for="fname">Start Date:</label>
+            </div>
+            <div class="col-75">
+                <input type="date" id="from" name="from"><br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-25">
+                <label for="fname">End Date:</label>
+            </div>
+            <div class="col-75">
+                <input type="date" id="to" name="to"><br>
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+      <table>
+        <tr>
+            <th></th>
+            <th>Value</th>
+            <th>Units</th>
+            <th>Rate</th>
+        </tr>
+        {% if hours %}
+            {% for key, value in hours.items() %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value.value }}</td>
+                    <td>{{ value.count }}</td>
+                    <td>{{ value.rate }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        
+        <tr>
+            <br>
+            <td>TOTAL</td>
+            <td>{{total_payment}}</td>
+            </tr>
+            <br>
+            <td>After TAX</td>
+            <td>{{total_payment_after_tax}}</td>
+            </tr>
+    </table>
+
+    {% endblock %}
+{% endblock %}
+
+
