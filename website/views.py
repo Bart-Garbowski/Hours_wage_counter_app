@@ -42,9 +42,7 @@ def delete_note():
 @login_required
 def savesettings():
     if request.form:
-
-        # flask-marshmallow
-        data = request.form    # sprawdzic czy uzytkownik wpisal dane , dane liczbowe , ograniczone do 2 cyfr po przecinku itp.
+        data = request.form
         current_user.base = data["base"]
         current_user.overtimes1 = data["overtimes1"]
         current_user.overtimes2 = data["overtimes2"]
@@ -59,7 +57,6 @@ def savesettings():
         db.session.add(current_user)
         db.session.commit()
     
-    #return jsonify({})
     return render_template("settings.html", user=current_user)
 
 def calculate_payment(date_hour_relation, overtime, holiday, sick):
@@ -78,18 +75,14 @@ def calculate_payment(date_hour_relation, overtime, holiday, sick):
     if overtime:
         for element in date_hour_relation:
             hours = calculate_overtimes_hours(element, hours)
-            #total_payment += calculate_overtimes_hours(element, overtimes1, overtimes2)
     elif holiday:
         hours["holiday"] = len(date_hour_relation)
-        #for element in date_hour_relation:
-            #total_payment += current_user.holidayrate / 8
     elif sick:
         for element in date_hour_relation:
             hours = calculate_sick(element, hours)
     else:
         for element in date_hour_relation:
             hours = calculate_hours(element, hours)
-        #total_payment += calculate_sa(date_hour_relation[-1])
         hours = calculate_sa(date_hour_relation[-1], hours)
     return hours
 
@@ -102,18 +95,7 @@ def calculate_overtimes_hours(element, hours):
     else:
         hours["overtimes2"] += 1
     return hours
-
-# def calculate_hours(element):
-#     weekday,hour = element.split("-")
-#     int_hour = int(hour)
-#     hours_worked = int(weekday) * 24 + int_hour
-#     if 6 <= hours_worked < 126:
-#         return current_user.base
-#     elif 126 <= hours_worked < 134:
-#         return current_user.overtimes1
-#     else:
-#         return current_user.overtimes2
-            
+        
 
 def calculate_hours(element, hours):
     weekday,hour = element.split("-")
@@ -121,8 +103,6 @@ def calculate_hours(element, hours):
     hours_worked = int(weekday) * 24 + int_hour
     if 6 <= hours_worked < 126:
         hours["base"] += 1
-    #elif 6 <= hours_worked < 126:
-        #hours["sick"] += 1
     elif 126 <= hours_worked < 134:
         hours["overtimes1"] += 1
     else:
@@ -187,10 +167,6 @@ def saveday():
     for hour in range(hours_worked):
         tmp_date = start_date + timedelta(hours=hour)
         date_hour_relation.append(f"{tmp_date.weekday()}-{tmp_date.hour}")
-    # overtimes 
-    print(date_hour_relation)
-    print(data)
-    print(start_date,hours_worked)
     hours = calculate_payment(date_hour_relation, data["overtimes"], data["holiday"], data["sick"]) 
     event = Event(
         user_id=current_user.id,
@@ -266,6 +242,4 @@ def calculate_final_payment():
         total_payment_after_tax = total_payment * (1 - current_user.tax / 100)
 
         print(total_payment, total_payment_after_tax)
-    #import pdb
-    #pdb.set_trace()
     return render_template("results.html", user=current_user, hours=hours, total_payment=total_payment, total_payment_after_tax=total_payment_after_tax)
