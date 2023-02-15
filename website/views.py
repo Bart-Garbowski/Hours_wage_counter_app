@@ -43,21 +43,77 @@ def delete_note():
 def savesettings():
     if request.form:
         data = request.form
-        current_user.base = data["base"]
-        current_user.overtimes1 = data["overtimes1"]
-        current_user.overtimes2 = data["overtimes2"]
-        current_user.holidayrate = data["holidayrate"]
-        current_user.sick = data["sick"]
-        current_user.shiftallowance1 = data["shiftallowance1"]
-        current_user.shiftallowance2 = data["shiftallowance2"]
-        current_user.shiftallowance3 = data["shiftallowance3"]
-        current_user.shiftallowance4 = data["shiftallowance4"]
-        current_user.shiftallowance5 = data["shiftallowance5"]
-        current_user.tax = data["tax"]
-        db.session.add(current_user)
-        db.session.commit()
+        if request.method == 'POST':
+            base = request.form.get("base")
+            if base == "" or base.islower():
+                flash("Base Hourly Rate can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.base = data["base"]
+        if request.method == 'POST':
+            overtimes1 = request.form.get("overtimes1")
+            if overtimes1 == "" or overtimes1.islower():
+                flash("Overtimes 1 can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.overtimes1 = data["overtimes1"]
+        if request.method == 'POST':
+            overtimes2 = request.form.get("overtimes2")
+            if overtimes2 == "" or overtimes2.islower():
+                flash("Overtimes 2 can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.overtimes2 = data["overtimes2"]
+        if request.method == 'POST':
+            holidayrate = request.form.get("holidayrate")
+            if holidayrate == "" or holidayrate.islower():
+                flash("Holiday Rate can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.holidayrate = data["holidayrate"]
+        if request.method == 'POST':
+            sick = request.form.get("sick")
+            if sick == "" or sick.islower():
+                flash("Sick can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.sick = data["sick"]
+        if request.method == 'POST':
+            shiftallowance1 = request.form.get("shiftallowance1")
+            if shiftallowance1 == "" or shiftallowance1.islower():
+                flash("Shift Allowance 1 Rate can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.shiftallowance1 = data["shiftallowance1"]
+        if request.method == 'POST':
+            shiftallowance2 = request.form.get("shiftallowance2")
+            if shiftallowance2 == "" or shiftallowance2.islower():
+                flash("Shift Allowance 2 Rate can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.shiftallowance2 = data["shiftallowance2"]
+        if request.method == 'POST':
+            shiftallowance3 = request.form.get("shiftallowance3")
+            if shiftallowance3 == "" or shiftallowance3.islower():
+                flash("Shift Allowance 3 Rate can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.shiftallowance3 = data["shiftallowance3"]
+        if request.method == 'POST':
+            shiftallowance4 = request.form.get("shiftallowance4")
+            if shiftallowance4 == "" or shiftallowance4.islower():
+                flash("Shift Allowance 4 Rate can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.shiftallowance4 = data["shiftallowance4"]
+        if request.method == 'POST':
+            shiftallowance5 = request.form.get("shiftallowance5")
+            if shiftallowance5 == "" or shiftallowance5.islower():
+                flash("Shift Allowance 5 Rate can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.shiftallowance5 = data["shiftallowance5"]
+        if request.method == 'POST':
+            tax = request.form.get("tax")
+            if tax == "" or tax.islower():
+                flash("Tax can't be empty or letters, please enter amount. For example: 11 or 12.45", category="error")
+            else:
+                current_user.tax = data["tax"]
+                db.session.add(current_user)
+                db.session.commit()
     
     return render_template("settings.html", user=current_user)
+
 
 def calculate_payment(date_hour_relation, overtime, holiday, sick):
     hours = {
@@ -84,6 +140,8 @@ def calculate_payment(date_hour_relation, overtime, holiday, sick):
         for element in date_hour_relation:
             hours = calculate_hours(element, hours)
         hours = calculate_sa(date_hour_relation[-1], hours)
+        flash("Fill all fields please!.", category='error')
+        
     return hours
 
 
@@ -109,6 +167,7 @@ def calculate_hours(element, hours):
         hours["overtimes2"] += 1
     return hours
 
+
 def calculate_sick(element, hours):
     weekday,hour = element.split("-")
     int_hour = int(hour)
@@ -116,6 +175,7 @@ def calculate_sick(element, hours):
     if 6 <= hours_worked < 126:
         hours["sick"] += 1
     return hours
+
 
 def calculate_sa(element, hours):
     weekday,hour = element.split("-")
@@ -137,6 +197,7 @@ def calculate_sa(element, hours):
             hours["shiftallowance4"] += 1
     return hours
 
+
 @views.route('/saveday', methods=['POST'])
 def saveday():
     data = json.loads(request.data)
@@ -145,7 +206,6 @@ def saveday():
         id_to_delete = None
         events = Event.query.filter(Event.user_id==current_user.id).all()
         current_date = data['currentDate']
-        print(current_date)
         for event in events:
             if event.startHours.strftime("%Y-%m-%d")==current_date:
                 id_to_delete = event.id
@@ -158,16 +218,20 @@ def saveday():
             return jsonify({})
     
     start = data["startHours"]
+    if start == "":
+        flash('Please fill correctly!.', category='error')
     if ":" not in start:
         start += ":00"
-    start_date = datetime.strptime(f"{data['currentDate']} {start}", "%Y-%m-%d %H:%M")
-    print(start_date)
+    try:
+        start_date = datetime.strptime(f"{data['currentDate']} {start}", "%Y-%m-%d %H:%M")
+    except ValueError:
+        flash('Please fill correctly for example: 6 , 6:30 , 06:20.', category='error')
     hours_worked = int(data["hoursWorked"])
     date_hour_relation = []
     for hour in range(hours_worked):
         tmp_date = start_date + timedelta(hours=hour)
         date_hour_relation.append(f"{tmp_date.weekday()}-{tmp_date.hour}")
-    hours = calculate_payment(date_hour_relation, data["overtimes"], data["holiday"], data["sick"]) 
+    hours = calculate_payment(date_hour_relation, data["overtimes"], data["holiday"], data["sick"])
     event = Event(
         user_id=current_user.id,
         startHours=start_date, 
@@ -192,11 +256,13 @@ def saveday():
 
     return jsonify({})
 
+
 @views.route('/getEvents')
 def get_events():
     events = Event.query.filter(Event.user_id==current_user.id)
     events_as_dict = [event.get_dict() for event in events]
     return jsonify(events_as_dict)
+
 
 @views.route('/calculate_payment', methods=['POST'])
 def calculate_final_payment():
@@ -204,8 +270,12 @@ def calculate_final_payment():
     if request.form:
         month_from = request.form["from"]
         month_to = request.form["to"]
-        start_date = datetime.strptime(f"{month_from} 6:00", "%Y-%m-%d %H:%M")
-        end_date = datetime.strptime(f"{month_to} 6:00", "%Y-%m-%d %H:%M")
+        try:
+            start_date = datetime.strptime(f"{month_from} 6:00", "%Y-%m-%d %H:%M")
+            end_date = datetime.strptime(f"{month_to} 6:00", "%Y-%m-%d %H:%M")
+        except ValueError:
+            flash('Please choose both Start date and End date and then press SUBMIT button.', category='error')
+            return render_template("results.html", user=current_user)
         events = Event.query.filter(Event.user_id==current_user.id).filter(Event.startHours >= start_date).filter(Event.startHours < end_date).all()
         hours = {
         "base": {"count": 0, "rate": current_user.base, "value": 0},

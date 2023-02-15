@@ -34,6 +34,7 @@ def logout():
     logout_user()
     return redirect(url_for('auth.login'))
 
+# info - wpisz liczby w formularz , mozna zmienia pola , program aktualizuje na biezaco
 
 @auth.route('/info')
 @login_required

@@ -5,10 +5,8 @@
 {% block script %}
 <br>
     <style>
-/* body{
-    background-color: #DDDDDD;
-} */
-    * {
+
+* {
   box-sizing: border-box;
 }
 
@@ -160,7 +158,7 @@ input[type=submit]:hover {
             <label for="fname">Tax</label>
         </div>
         <div class="col-75">
-            <input type="text" id="tax" name="tax" ><br>
+            <input type="text" id="tax" name="tax" value="{{user.tax}}" ><br>
         </div>
     </div>
     <br>
